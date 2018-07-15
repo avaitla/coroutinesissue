@@ -35,10 +35,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    suspend fun getDataFromWebV1(): String {
-        return "https://httpbin.org/uuid".httpGet().awaitString()
-    }
-
     fun printRemoteDataV1() {
         val job = async(CommonPool) { getDataFromWebV1() }
 
@@ -48,11 +44,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
-    suspend fun getDataFromWebV2(): String {
+    suspend fun getDataFromWebV1(): String {
         return "https://httpbin.org/uuid".httpGet().awaitString()
     }
+
+
 
     fun printRemoteDataV2() = launch(CommonPool) {
         val result = getDataFromWebV2()
@@ -62,11 +58,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
-    suspend fun getDataFromWebV3(): String = withContext(CommonPool) {
-        "https://httpbin.org/uuid".httpGet().awaitString()
+    suspend fun getDataFromWebV2(): String {
+        return "https://httpbin.org/uuid".httpGet().awaitString()
     }
+
+
 
     fun printRemoteDataV3() {
         launch(UI) {
@@ -75,13 +71,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
-    fun getDataFromWebV4(): Deferred<String> {
-        return async(CommonPool) {
-            "https://httpbin.org/uuid".httpGet().awaitString()
-        }
+    suspend fun getDataFromWebV3(): String = withContext(CommonPool) {
+        "https://httpbin.org/uuid".httpGet().awaitString()
     }
+
+
 
     fun printRemoteDataV4() {
         launch(UI) {
@@ -89,6 +83,13 @@ class MainActivity : AppCompatActivity() {
             toastMessage("V4: $result")
         }
     }
+
+    fun getDataFromWebV4(): Deferred<String> {
+        return async(CommonPool) {
+            "https://httpbin.org/uuid".httpGet().awaitString()
+        }
+    }
+
 
 
 }
