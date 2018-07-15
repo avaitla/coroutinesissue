@@ -4,22 +4,12 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
-import awaitObjectResponse
-import com.github.kittinunf.fuel.core.FuelError
-import com.github.kittinunf.fuel.gson.gsonDeserializerOf
+import awaitString
 import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.result.Result
+import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
 
 class MainActivity : AppCompatActivity() {
-
-    data class UUID(val uuid: String)
-
-    suspend fun getData(): Result<UUID, FuelError> {
-        val awaitObject = "https://httpbin.org/uuid".httpGet().awaitObjectResponse (gsonDeserializerOf<UUID>())
-        return awaitObject.third
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,25 +18,77 @@ class MainActivity : AppCompatActivity() {
         val makeRequestBtn = findViewById<Button>(R.id.request_btn)
 
         makeRequestBtn.setOnClickListener {
-            makeRequest()
+            printRemoteDataV1()
+
+            printRemoteDataV2()
+
+            printRemoteDataV3()
+
+            printRemoteDataV4()
         }
 
     }
 
-    fun makeRequest() = launch(UI) {
-        val result = getData()
+    fun toastMessage(string: String) {
+        Toast.makeText(this@MainActivity, string, Toast.LENGTH_LONG).show()
+    }
 
-        when (result) {
-            is Result.Failure -> {
-                val ex = result.getException()
-                Toast.makeText(this@MainActivity, "Failure: $ex", Toast.LENGTH_LONG).show()
-            }
 
-            is Result.Success -> {
-                val data = result.get()
-                Toast.makeText(this@MainActivity, "Success: $data", Toast.LENGTH_LONG).show()
-            }
+
+    suspend fun getDataFromWebV1(): String {
+        return "https://httpbin.org/uuid".httpGet().awaitString()
+    }
+
+    fun printRemoteDataV1() {
+        val job = async(CommonPool) { getDataFromWebV1() }
+
+        launch(UI) {
+            val result = job.await()
+            toastMessage("V1: $result")
         }
     }
+
+
+
+    suspend fun getDataFromWebV2(): String {
+        return "https://httpbin.org/uuid".httpGet().awaitString()
+    }
+
+    fun printRemoteDataV2() = launch(CommonPool) {
+        val result = getDataFromWebV2()
+
+        launch(UI) {
+            toastMessage("V2: $result")
+        }
+    }
+
+
+
+    suspend fun getDataFromWebV3(): String = withContext(CommonPool) {
+        "https://httpbin.org/uuid".httpGet().awaitString()
+    }
+
+    fun printRemoteDataV3() {
+        launch(UI) {
+            val result = getDataFromWebV3()
+            toastMessage("V3: $result")
+        }
+    }
+
+
+
+    fun getDataFromWebV4(): Deferred<String> {
+        return async(CommonPool) {
+            "https://httpbin.org/uuid".httpGet().awaitString()
+        }
+    }
+
+    fun printRemoteDataV4() {
+        launch(UI) {
+            val result = getDataFromWebV4().await()
+            toastMessage("V4: $result")
+        }
+    }
+
 
 }
