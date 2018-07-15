@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
-import awaitObject
+import awaitObjectResponse
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.gson.gsonDeserializerOf
 import com.github.kittinunf.fuel.httpGet
@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
     data class UUID(val uuid: String)
 
     suspend fun getData(): Result<UUID, FuelError> {
-        val awaitObject = "https://httpbin.org/uuid".httpGet().awaitObject (gsonDeserializerOf<UUID>())
+        val awaitObject = "https://httpbin.org/uuid".httpGet().awaitObjectResponse (gsonDeserializerOf<UUID>())
         return awaitObject.third
     }
 
