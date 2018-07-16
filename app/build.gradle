@@ -31,21 +31,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
-
-
     implementation "com.github.kittinunf.fuel:fuel:$fuel_version" //for JVM
-    implementation "com.github.kittinunf.fuel:fuel-android:$fuel_version" //for Android
-    implementation "com.github.kittinunf.fuel:fuel-livedata:$fuel_version" //for LiveData support
-    implementation "com.github.kittinunf.fuel:fuel-rxjava:$fuel_version" //for RxJava support
-    implementation "com.github.kittinunf.fuel:fuel-coroutines:$fuel_version" //for Kotlin Coroutines support
-    implementation "com.github.kittinunf.fuel:fuel-gson:$fuel_version" //for Gson support
-    implementation "com.github.kittinunf.fuel:fuel-jackson:$fuel_version" //for Jackson support
-    implementation "com.github.kittinunf.fuel:fuel-moshi:$fuel_version" //for Moshi support
-    implementation "com.github.kittinunf.fuel:fuel-forge:$fuel_version" //for Forge support
-
+    implementation "com.github.kittinunf.fuel:fuel-android:$fuel_version" //for JVM
 }
 
 kotlin {
